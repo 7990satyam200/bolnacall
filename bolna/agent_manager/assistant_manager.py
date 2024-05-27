@@ -75,6 +75,9 @@ class AssistantManager(BaseManager):
             # task_output['task_config'] = task_manager.task_config
             task_output['summarized_data'] = task_manager.summarized_data
             task_output['extracted_data'] = task_manager.extracted_data
+            task_output['agent_id'] = task_manager.assistant_id
+            print(task_manager.task_config)
+            logger.info("Task configuration: $tc: {}".format(task_manager.task_config))
             db['execution_metadata'].insert_one(task_output)
             if task["task_type"] == "extraction":
                 input_parameters["extraction_details"] = task_output["extracted_data"]
