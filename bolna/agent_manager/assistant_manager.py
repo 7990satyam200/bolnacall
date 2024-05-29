@@ -66,21 +66,17 @@ class AssistantManager(BaseManager):
 
                 # removing context_data from non-conversational tasks
                 self.context_data = None
-            task_output['created_at'] = datetime.now().isoformat()
-            task_output['model'] = task_manager.task_config["tools_config"]["llm_agent"]["model"]
-            task_output['temperature'] = task_manager.task_config["tools_config"]["llm_agent"]["temperature"]
-            task_output['max_tokens'] = task_manager.task_config["tools_config"]["llm_agent"]["max_tokens"]
-            # task_output['synthesizer_voice'] = task_manager.synthesizer_voice
-            # task_output['synthesizer_provider'] = task_manager.synthesizer_provider
-            # task_output['task_config'] = task_manager.task_config
-            task_output['summarized_data'] = task_manager.summarized_data
-            task_output['extracted_data'] = task_manager.extracted_data
-            task_output['agent_id'] = task_manager.assistant_id
-            logger.info("Updating Execution Information in MongoDB")
-            db['execution_metadata'].insert_one(task_output)
-            logger.info("Done Updating Execution Information in MongoDB")
-            print(task_manager.task_config)
-            logger.info("Task configuration: $tc: {}".format(task_manager.task_config))
+            if task["task_type"] == "conversation":
+                task_output['agent_id'] = task_manager.assistant_id
+                task_output['created_at'] = datetime.now().isoformat()
+                task_output['model'] = task_manager.task_config["tools_config"]["llm_agent"]["model"]
+                task_output['temperature'] = task_manager.task_config["tools_config"]["llm_agent"]["temperature"]
+                task_output['max_tokens'] = task_manager.task_config["tools_config"]["llm_agent"]["max_tokens"]
+                task_output['synthesizer_voice'] = task_manager.synthesizer_voice
+                task_output['synthesizer_provider'] = task_manager.synthesizer_provider
+                logger.info("Updating Execution Information in MongoDB")
+                db['execution_metadata'].insert_one(task_output)
+                logger.info("Done Updating Execution Information in MongoDB")
             if task["task_type"] == "extraction":
                 input_parameters["extraction_details"] = task_output["extracted_data"]
         logger.info("Done with execution of the agent")
