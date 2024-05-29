@@ -43,7 +43,7 @@ class AssistantManager(BaseManager):
         """
         if run_id:
             self.run_id = run_id
-
+        result = {}
         input_parameters = None
         for task_id, task in enumerate(self.tasks):
 
@@ -67,16 +67,20 @@ class AssistantManager(BaseManager):
                 # removing context_data from non-conversational tasks
                 self.context_data = None
             if task["task_type"] == "conversation":
-                task_output['agent_id'] = task_manager.assistant_id
-                task_output['created_at'] = datetime.now().isoformat()
-                task_output['model'] = task_manager.task_config["tools_config"]["llm_agent"]["model"]
-                task_output['temperature'] = task_manager.task_config["tools_config"]["llm_agent"]["temperature"]
-                task_output['max_tokens'] = task_manager.task_config["tools_config"]["llm_agent"]["max_tokens"]
-                task_output['synthesizer_voice'] = task_manager.synthesizer_voice
-                task_output['synthesizer_provider'] = task_manager.synthesizer_provider
+                result = task_output.copy()
+                result['agent_id'] = task_manager.assistant_id
+                result['created_at'] = datetime.now().isoformat()
+                result['model'] = task_manager.task_config["tools_config"]["llm_agent"]["model"]
+                result['temperature'] = task_manager.task_config["tools_config"]["llm_agent"]["temperature"]
+                result['max_tokens'] = task_manager.task_config["tools_config"]["llm_agent"]["max_tokens"]
+                result['synthesizer_voice'] = task_manager.synthesizer_voice
+                result['synthesizer_provider'] = task_manager.synthesizer_provider
                 logger.info("Updating Execution Information in MongoDB")
-                db['execution_metadata'].insert_one(task_output)
                 logger.info("Done Updating Execution Information in MongoDB")
+            if task["task_type"] == "summarization":
+                result['summarised_data']  = task_manager.summarized_data
             if task["task_type"] == "extraction":
+                result['extracted_data'] = task_manager.extracted_data
                 input_parameters["extraction_details"] = task_output["extracted_data"]
+        db['execution_metadata'].insert_one(result)
         logger.info("Done with execution of the agent")
