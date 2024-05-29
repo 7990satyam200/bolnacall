@@ -75,11 +75,11 @@ class AssistantManager(BaseManager):
                 result['max_tokens'] = task_manager.task_config["tools_config"]["llm_agent"]["max_tokens"]
                 result['synthesizer_voice'] = task_manager.synthesizer_voice
                 result['synthesizer_provider'] = task_manager.synthesizer_provider
-                logger.info("Updating Execution Information in MongoDB")
-                logger.info("Done Updating Execution Information in MongoDB")
             if task["task_type"] == "summarization":
                 result['summarised_data']  = task_manager.summarized_data
             if task["task_type"] == "extraction":
                 input_parameters["extraction_details"] = task_output["extracted_data"]
+        logger.info("Updating Execution Information in MongoDB")
         db['execution_metadata'].insert_one(result)
+        logger.info("Done Updating Execution Information in MongoDB")
         logger.info("Done with execution of the agent")
