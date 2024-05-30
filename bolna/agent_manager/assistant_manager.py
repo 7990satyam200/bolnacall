@@ -78,7 +78,6 @@ class AssistantManager(BaseManager):
             if task["task_type"] == "summarization":
                 result['summarised_data']  = task_manager.summarized_data
             if task["task_type"] == "extraction":
-                result['extracted_data'] = task_manager.extracted_data
                 input_parameters["extraction_details"] = task_output["extracted_data"]
         logger.info("Updating Execution Information in MongoDB")
         db['execution_metadata'].insert_one(result)
