@@ -174,5 +174,5 @@ class AgentModel(BaseModel):
     agent_name: str
     agent_type: str = "other"
     tasks: List[Task]
-    welcome_message: Optional[str] =AGENT_WELCOME_MESSAGE
+    agent_welcome_message: Optional[str] =AGENT_WELCOME_MESSAGE
  # Usually of the format task_1: { "system_prompt" : "helpful agent" } #For IVR type it should be a basic graph
