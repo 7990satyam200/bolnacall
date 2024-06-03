@@ -3,6 +3,7 @@ from typing import Optional, List, Union, Dict
 from pydantic import BaseModel, Field, validator, ValidationError, Json
 from .providers import *
 
+AGENT_WELCOME_MESSAGE = "This call is being recorded for quality assurance and training. Please speak now."
 
 def validate_attribute(value, allowed_values):
     if value not in allowed_values:
@@ -173,4 +174,5 @@ class AgentModel(BaseModel):
     agent_name: str
     agent_type: str = "other"
     tasks: List[Task]
+    welcome_message: Optional[str] =AGENT_WELCOME_MESSAGE
  # Usually of the format task_1: { "system_prompt" : "helpful agent" } #For IVR type it should be a basic graph
